@@ -10,11 +10,13 @@ SAMPLE_ID=$1
 echo "SAMPLE_ID=${SAMPLE_ID}"
 
 ##### MODULES #####
-module load FastQC
+#module load FastQC
 
 # Examining the raw sequencing data
 
-fastqc ../SAMPLES/${SAMPLE_ID}/${SAMPLE_ID}_1.fq.gz
-fastqc ../SAMPLES/${SAMPLE_ID}/${SAMPLE_ID}_2.fq.gz
+#fastqc ../SAMPLES/${SAMPLE_ID}/${SAMPLE_ID}_1.fq.gz
+#fastqc ../SAMPLES/${SAMPLE_ID}/${SAMPLE_ID}_2.fq.gz
 
-mv ../SAMPLES/${SAMPLE_ID}/*fastqc.* ../OUTPUT/FastQC_reports/before_QC/ 
+#mv ../SAMPLES/${SAMPLE_ID}/*fastqc.* ../OUTPUT/FastQC_reports/before_QC/ 
+
+
