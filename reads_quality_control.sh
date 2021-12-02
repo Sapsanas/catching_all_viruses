@@ -12,7 +12,7 @@ echo "SAMPLE_ID=${SAMPLE_ID}"
 export PATH=$PATH:/home/umcg-sgarmaeva/.local
 
 ##### MODULES #####
-#module load FastQC
+module load FastQC
 module load Java/11-LTS
 module load Python/3.7.4-GCCcore-7.3.0-bare
 
@@ -53,4 +53,12 @@ kneaddata \
 	--output ../SAMPLES/${SAMPLE_ID}/raw_reads/ \
 	--log ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}.log \
 
+mv ../SAMPLES/${SAMPLE_ID}/raw_reads/${SAMPLE_ID}_kneaddata_paired_*.fastq ../SAMPLES/${SAMPLE_ID}/clean_reads
+rm -r ../SAMPLES/${SAMPLE_ID}/raw_reads
+
+# quality control assessment
+fastqc ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_kneaddata_paired_1.fastq
+fastqc ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_kneaddata_paired_2.fastq
+
+mv ../SAMPLES/${SAMPLE_ID}/clean_reads/*fastqc.* ../OUTPUT/FastQC_reports/post_QC 
 
