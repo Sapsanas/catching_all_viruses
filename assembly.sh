@@ -2,7 +2,7 @@
 #SBATCH --job-name=QC
 #SBATCH --output=QC.out
 #SBATCH --error=QC.err
-#SBATCH --mem=40gb
+#SBATCH --mem=60gb
 #SBATCH --time=08:00:00
 #SBATCH --cpus-per-task=8
 
@@ -11,7 +11,6 @@ echo "SAMPLE_ID=${SAMPLE_ID}"
 
 ## per sample assembly
 /groups/umcg-llnext/tmp01/umcg-agulyaeva/NEXT_ASSEMBLY/SOFTWARE/SPAdes-3.15.3-Linux/bin/metaspades.py \
-	#--continue \
 	-1 ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_kneaddata_paired_1.fastq \
     	-2 ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_kneaddata_paired_2.fastq \
     	-o ../SAMPLES/${SAMPLE_ID}/metaSPAdes_out \
