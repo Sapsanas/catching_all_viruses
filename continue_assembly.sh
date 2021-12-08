@@ -2,17 +2,19 @@
 #SBATCH --job-name=QC
 #SBATCH --output=QC.out
 #SBATCH --error=QC.err
-#SBATCH --mem=60gb
+#SBATCH --mem=64gb
 #SBATCH --time=08:00:00
 #SBATCH --cpus-per-task=8
 
 SAMPLE_ID=$1
 echo "SAMPLE_ID=${SAMPLE_ID}"
 
-## per sample assembly
+## continue assembly only in case you are confident that the only reason the assembly stopped was the time limit
 /groups/umcg-llnext/tmp01/umcg-agulyaeva/NEXT_ASSEMBLY/SOFTWARE/SPAdes-3.15.3-Linux/bin/metaspades.py \
-	--continue \
-    	-o ../SAMPLES/${SAMPLE_ID}/metaSPAdes_out
+	#--continue \
+	--restart-from last \
+    	-o ../SAMPLES/${SAMPLE_ID}/metaSPAdes_out \
+	--threads ${SLURM_CPUS_PER_TASK}
 
 ## assembly quality assessment
 /groups/umcg-llnext/tmp01/umcg-sgarmaeva/SOFTWARE/quast-5.0.2/quast.py \
