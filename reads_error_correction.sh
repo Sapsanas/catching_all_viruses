@@ -31,4 +31,26 @@ module load Java/11-LTS
 
 # cleaning
 rm ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_kneaddata_paired_*.fastq
-	
+
+# reads dedplication
+# reads deduplication is used for samples that passed the read error correction by spades, but failed to be 
+# assembled despite the upgrade in RAM
+# of note, in this project it is needed for samples that underwent both reverse transcription and second
+# strand generation and MDA
+
+/groups/umcg-llnext/tmp01/umcg-agulyaeva/NEXT_ASSEMBLY/SOFTWARE/bbmap/clumpify.sh \
+	in=../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_corr_1.fq \
+	in2=../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_corr_2.fq \
+	out=../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_dedup_1.fq \
+	out2=../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_dedup_2.fq \
+	dedupe=t \
+	subs=0 \
+	passes=2 \
+	deletetemp=t \
+ 	t=4
+
+if [ -f ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_dedup_2.fq ]
+then
+	rm ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_corr_*.fq
+fi	
+
