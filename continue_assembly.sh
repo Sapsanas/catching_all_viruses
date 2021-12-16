@@ -2,7 +2,7 @@
 #SBATCH --job-name=QC
 #SBATCH --output=QC.out
 #SBATCH --error=QC.err
-#SBATCH --mem=64gb
+#SBATCH --mem=40gb
 #SBATCH --time=08:00:00
 #SBATCH --cpus-per-task=8
 
@@ -11,17 +11,36 @@ echo "SAMPLE_ID=${SAMPLE_ID}"
 
 ## continue assembly only in case you are confident that the only reason the assembly stopped was the time limit
 #/groups/umcg-llnext/tmp01/umcg-agulyaeva/NEXT_ASSEMBLY/SOFTWARE/SPAdes-3.15.3-Linux/bin/metaspades.py \
-	#--continue \
+##	--continue \
 #	--restart-from last \
 #    	-o ../SAMPLES/${SAMPLE_ID}/metaSPAdes_out \
 #	--threads ${SLURM_CPUS_PER_TASK}
 
 ## assembly from corrected reads:
 rm -r ../SAMPLES/${SAMPLE_ID}/metaSPAdes_out 
-/groups/umcg-llnext/tmp01/umcg-agulyaeva/NEXT_ASSEMBLY/SOFTWARE/SPAdes-3.15.3-Linux/bin/metaspades.py \
+#/groups/umcg-llnext/tmp01/umcg-agulyaeva/NEXT_ASSEMBLY/SOFTWARE/SPAdes-3.15.3-Linux/bin/metaspades.py \
+#	--only-assembler \
+#	-1 ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_corr_1.fq \
+#	-2 ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_corr_2.fq \
+#	-o ../SAMPLES/${SAMPLE_ID}/metaSPAdes_out \
+#	--threads ${SLURM_CPUS_PER_TASK}
+
+
+## assembly from deduplicated reads:
+#/groups/umcg-llnext/tmp01/umcg-agulyaeva/NEXT_ASSEMBLY/SOFTWARE/SPAdes-3.15.3-Linux/bin/metaspades.py \
+#	--only-assembler \
+# 	-1 ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_dedup_1.fq \
+#	-2 ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_dedup_2.fq \
+#	-o ../SAMPLES/${SAMPLE_ID}/metaSPAdes_out \
+#	--threads ${SLURM_CPUS_PER_TASK}
+
+
+## assembly from deduplicated reads using single cell mode:
+/groups/umcg-llnext/tmp01/umcg-agulyaeva/NEXT_ASSEMBLY/SOFTWARE/SPAdes-3.15.3-Linux/bin/spades.py \
 	--only-assembler \
-	-1 ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_corr_1.fq \
-	-2 ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_corr_2.fq \
+	--sc \
+	-1 ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_dedup_1.fq \
+	-2 ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_dedup_2.fq \
 	-o ../SAMPLES/${SAMPLE_ID}/metaSPAdes_out \
 	--threads ${SLURM_CPUS_PER_TASK}
 
@@ -38,8 +57,10 @@ if [ -f ../SAMPLES/${SAMPLE_ID}/metaSPAdes_out/scaffolds.fasta ]
 then 
 	#gzip ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_kneaddata_paired_1.fastq
 	#gzip ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_kneaddata_paired_2.fastq
-	gzip ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_corr_1.fq
-	gzip ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_corr_2.fq
+	#gzip ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_corr_1.fq
+	#gzip ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_corr_2.fq
+	gzip ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_dedup_1.fq
+	gzip ../SAMPLES/${SAMPLE_ID}/clean_reads/${SAMPLE_ID}_clean_dedup_2.fq
 	
 	mv ../SAMPLES/${SAMPLE_ID}/metaSPAdes_out/scaffolds.fasta ../SAMPLES/${SAMPLE_ID}/${SAMPLE_ID}_scaffolds.fasta
 	mv ../SAMPLES/${SAMPLE_ID}/metaSPAdes_out/contigs.fasta ../SAMPLES/${SAMPLE_ID}/${SAMPLE_ID}_contigs.fasta
